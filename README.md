@@ -1,7 +1,7 @@
 # Burger Boss
 
 A small browser platformer. You are a burger. Every hot dog on the level needs
-rescuing, every grill on the level wants you medium-rare. Three courses, each
+rescuing, every grill on the level wants you medium-rare. Four courses, each
 one meaner than the last.
 
 ![no build step, no dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
@@ -39,30 +39,25 @@ the corner enters fullscreen on any device.
 - Touching a lit grill costs a life. So does falling off the world.
 - Three lives for the whole run. Run out and you start over from level 1.
 
-## The three levels
+## The four levels
 
 1. **Backyard Cookout** — 6 hot dogs, 2 grills that just sit there. A warm-up.
 2. **Grill Alley** — 8 hot dogs, wider gaps, grills that patrol, and one that
    flares on a timer. Wait for it to go out, then walk through.
 3. **Inferno Kitchen** — 10 hot dogs, long jumps, fast patrolling grills, and
    platforms that move under your feet.
+4. **Grease Trap** — 12 hot dogs and the longest run of the four. Timed grills
+   come in pairs now, so crossing a ledge means reading two flames instead of
+   one and waiting in the gap between them. The last hot dog sits on a perch
+   you reach by riding a lift up, and a grill paces the floor in front of the
+   exit.
 
 ## Leaderboard
 
-Beat all three levels and the win screen shows a **Submit to the public
-leaderboard** link, carrying your run's time and death count to
-[`leaderboard.html`](leaderboard.html) — top 20, fastest first, live for
-anyone who opens it.
-
-There's no backend. The board is a page on the
-[Nostr protocol](https://nostr.com): a signed, timestamped post to a handful
-of public relays (`relay.damus.io`, `nos.lol`, `relay.primal.net`), tagged
-`burgerboss-leaderboard-v1`. The page subscribes to that tag and renders
-whatever it finds, live, as new posts arrive — no server we run, no account
-for anyone to create. The first time you open the leaderboard it generates a
-keypair and keeps it in this browser's `localStorage`; that's the closest
-thing to an identity here, and it's what lets a better run replace your
-previous one on the board instead of stacking up duplicates.
+Beat all four levels and the win screen shows a **Submit to the public
+leaderboard** button, carrying your run's time and death count to a
+[shared leaderboard](https://claude.ai/code/artifact/ea98dca6-43e5-4ae4-87fe-262a337fa8d2)
+that updates for everyone as soon as a new time lands — top 20, fastest first.
 
 A submitted time is checked against a floor computed from the game's own
 physics (a run can never legitimately finish faster than each level's width
@@ -141,7 +136,7 @@ under ~120 px and gaps under ~180 px if you want the level to be beatable.
 
 Open `test.html` in the browser (or visit `/test.html` on the local server). It
 freezes the animation loop, drives the real game code frame by frame with a
-scripted 60 Hz clock, and reports pass/fail for 59 checks: level geometry (are
+scripted 60 Hz clock, and reports pass/fail for 75 checks: level geometry (are
 all the gaps jumpable, does every hot dog sit on a surface, do patrolling
 grills stay on their ledge), physics (jump height, jump distance, friction),
 hazards, collection, the locked exit, level progression, moving platforms,

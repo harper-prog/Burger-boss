@@ -1,6 +1,6 @@
 /* Burger Boss - a tiny canvas platformer.
  * You are a burger. Collect every hot dog, avoid the flaming grills,
- * reach the serving table. Three levels, each meaner than the last. */
+ * reach the serving table. Four levels, each meaner than the last. */
 (() => {
   'use strict';
 
@@ -28,7 +28,8 @@
   const THEMES = [
     { top: '#6ab04c', body: '#5b3a24', edge: '#8fd45e', plank: '#a9713f', plankTop: '#c98d55' },
     { top: '#cf7a3f', body: '#5a3320', edge: '#eb9a55', plank: '#9d6237', plankTop: '#bf7f4c' },
-    { top: '#8e8f9c', body: '#39333f', edge: '#b3b4c1', plank: '#6d6a78', plankTop: '#8f8c9b' }
+    { top: '#8e8f9c', body: '#39333f', edge: '#b3b4c1', plank: '#6d6a78', plankTop: '#8f8c9b' },
+    { top: '#7d6a3c', body: '#241c2b', edge: '#a89150', plank: '#4f3f4a', plankTop: '#6d5a63' }
   ];
 
   const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
@@ -767,5 +768,5 @@
   requestAnimationFrame(frame);
 
   // handy for poking at the game from the console, and used by test.html
-  window.BurgerBoss = { game, player, levels: LEVELS, get level() { return level; } };
+  window.BurgerBoss = { game, player, levels: LEVELS, themes: THEMES, get level() { return level; } };
 })();

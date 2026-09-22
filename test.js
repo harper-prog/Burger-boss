@@ -36,6 +36,12 @@
   const MAX_RISE = 133;      // v^2 / 2g with JUMP_V 800, GRAVITY 2400
   const MAX_GAP = 207;       // airtime * MAX_SPEED
 
+  ok('the game ships four courses', BB.levels.length === 4, BB.levels.length + ' levels');
+  ok('the fourth course is Grease Trap', BB.levels[3] && BB.levels[3].name === 'Grease Trap',
+    BB.levels.map(L => L.name).join(' / '));
+  ok('every level has its own palette', BB.themes && BB.themes.length >= BB.levels.length,
+    (BB.themes ? BB.themes.length : 0) + ' themes for ' + BB.levels.length + ' levels');
+
   BB.levels.forEach((L, i) => {
     const tag = 'L' + (i + 1);
     const ground = L.platforms.filter(p => p.h >= 40).sort((a, b) => a.x - b.x);
@@ -149,7 +155,8 @@
     return { stayedShut, collected, cleared: G.state === 'clear', total };
   }
 
-  for (let n = 0; n < 3; n++) {
+  const LAST = BB.levels.length - 1;
+  for (let n = 0; n <= LAST; n++) {
     const tag = 'L' + (n + 1);
     ok(tag + ' is the level we are on', G.levelIndex === n, 'levelIndex ' + G.levelIndex);
     const r = beatLevel();
@@ -160,25 +167,28 @@
     ok(tag + ' clear screen waits for a keypress', G.state === 'clear', 'state ' + G.state);
     tap('Space');
     frames(3);
-    if (n < 2) ok(tag + ' advances to the next level', G.state === 'play' && G.levelIndex === n + 1, 'state ' + G.state + ' level ' + (G.levelIndex + 1));
+    if (n < LAST) ok(tag + ' advances to the next level', G.state === 'play' && G.levelIndex === n + 1, 'state ' + G.state + ' level ' + (G.levelIndex + 1));
   }
-  ok('finishing level 3 wins the game', G.state === 'win', 'state ' + G.state);
-  ok('difficulty ramps: 6 then 8 then 10 hot dogs',
-    BB.levels.map(L => L.hotdogs.length).join(',') === '6,8,10',
-    BB.levels.map(L => L.hotdogs.length).join(','));
-  ok('later levels are longer', BB.levels[0].width < BB.levels[1].width && BB.levels[1].width < BB.levels[2].width,
-    BB.levels.map(L => L.width).join(' < '));
+  ok('finishing the last level wins the game', G.state === 'win', 'state ' + G.state);
+
+  const rising = a => a.every((v, i) => i === 0 || v > a[i - 1]);
+  const dogCounts = BB.levels.map(L => L.hotdogs.length);
+  ok('each level has more hot dogs than the one before', rising(dogCounts), dogCounts.join(','));
+  const widths = BB.levels.map(L => L.width);
+  ok('each level is longer than the one before', rising(widths), widths.join(' < '));
 
   /* ---- 4. moving platforms --------------------------------------------- */
   section('moving platforms');
   tap('Space'); frames(3);           // win -> title
   tap('Enter'); frames(3);           // title -> level 1
-  G.levelIndex = 2;                  // jump straight to the level with movers
+  const moverLevel = BB.levels.findIndex(L => L.platforms.some(p => p.patrol && p.patrol.axis === 'y'));
+  ok('some level has a vertically moving platform', moverLevel >= 0, 'level ' + (moverLevel + 1));
+  G.levelIndex = Math.max(moverLevel, 0);   // jump straight to the level with movers
   tap('KeyR'); frames(30);
-  ok('level 3 loaded', BB.level.data.name === 'Inferno Kitchen', BB.level.data.name);
+  ok('the moving-platform level loaded', BB.level.data.name === BB.levels[G.levelIndex].name, BB.level.data.name);
 
   const mover = BB.level.platforms.find(p => p.patrol && p.patrol.axis === 'y');
-  ok('level 3 has a vertically moving platform', !!mover);
+  ok('that level has a vertically moving platform', !!mover);
   if (mover) {
     put(mover.x + 30, mover.y - 45);
     frames(10);
